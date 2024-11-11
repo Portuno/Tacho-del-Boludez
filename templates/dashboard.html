@@ -1,0 +1,50 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Bienvenido, {{ current_user.username }}</h1>
+    <h2>Mis Boludeces</h2>
+    <form method="POST" action="{{ url_for('add_boludez') }}">
+        <label for="contenido">Contenido:</label>
+        <input type="text" name="contenido" required>
+        <br>
+        <label for="privacidad">Privacidad:</label>
+        <select name="privacidad">
+            <option value="secreto">Secreto</option>
+            <option value="privado">Privado</option>
+            <option value="publico">Público</option>
+        </select>
+        <br>
+        <input type="submit" value="Agregar Boludez">
+    </form>
+
+    <h3>Filtrar por Privacidad</h3>
+    <a href="{{ url_for('dashboard', privacidad='publico') }}">Público</a>
+    <a href="{{ url_for('dashboard', privacidad='privado') }}">Privado</a>
+    <a href="{{ url_for('dashboard', privacidad='secreto') }}">Secreto</a>
+
+    <ul>
+        {% for boludez in boludeces %}
+            <li>
+                {{ boludez.contenido }} ({{ boludez.privacidad }})
+                <form method="POST" action="{{ url_for('edit_boludez', boludez_id=boludez.id) }}">
+                    <input type="text" name="contenido" placeholder="Nuevo contenido">
+                    <select name="privacidad">
+                        <option value="secreto">Secreto</option>
+                        <option value="privado">Privado</option>
+                        <option value="publico">Público</option>
+                    </select>
+                    <input type="submit" value="Editar">
+                </form>
+                <a href="{{ url_for('delete_boludez', boludez_id=boludez.id) }}">Eliminar</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+</body>
+</html>
